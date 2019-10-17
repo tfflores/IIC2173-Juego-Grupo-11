@@ -61,7 +61,7 @@ private void Update()
     {
         GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
         Destroy(effect, 0.5f);
-        if (lives > 1)
+        if (lives > 0)
         {
             health = maxHealth;
             DisplayHealth(health);
@@ -82,7 +82,7 @@ private void Update()
 
     void CheckWin()
     {
-        if (score >= 1500)
+        if (score >= 3000)
         {
             Debug.Log("WIN");
             Destroy(gameObject);

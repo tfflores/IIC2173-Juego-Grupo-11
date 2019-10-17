@@ -9,13 +9,21 @@ public class Shooting : MonoBehaviour
 
     public float bulletForce = 20f;
 
+    
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetButtonDown("Fire1"))
+        var fireRate = .3f;
+
+        if (Input.GetButtonDown("Fire1"))
         {
-            Shoot();
+            InvokeRepeating("Shoot", .001f, fireRate);
+        }
+
+        else if (Input.GetButtonUp("Fire1"))
+        {
+            CancelInvoke("Shoot");
         }
     }
 
