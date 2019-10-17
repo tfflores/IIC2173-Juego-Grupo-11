@@ -8,16 +8,16 @@ public class Player : MonoBehaviour
     public int maxHealth = 120;
     public int score = 0;
     public int health;
-    public int lives = 5;
+    public int lives = 1;
     public System.DateTime invincible;
     public bool vulnerable;
     public Text ui_score;
     public Text ui_health;
     public Text ui_lives;
-    public Text ui_gameover;
 
 
     public GameObject deathEffect;
+    public GameObject EndGameScreen;
 
     private void Start()
     {
@@ -25,16 +25,18 @@ public class Player : MonoBehaviour
         invincible = System.DateTime.Now;
         vulnerable = true;
         SetScore(0);
-        LivesCounter(0);
+        updateLives();
+        EndGameScreen = GameObject.FindWithTag("EndGame");
+        EndGameScreen.SetActive(false);
     }
 
-    private void Update()
+private void Update()
     {
         if (System.DateTime.Compare(invincible, System.DateTime.Now) < 0)
         {
             vulnerable = true;
         }
-
+        CheckWin();
     }
 
     public void TakeDamage(int damage)
@@ -64,16 +66,29 @@ public class Player : MonoBehaviour
             health = maxHealth;
             DisplayHealth(health);
             transform.position = GameObject.Find("PlayerRespawn").transform.position;
-            LivesCounter(-1);
+            lives -= 1;
+            updateLives();
             InvincibilityReset(6);
         }
         else
         {
             DisplayHealth(0);
-            ui_gameover.text = "GAME OVER";
             Destroy(gameObject);
+            EndGameScreen.SetActive(true);
+            EndGameScreen.transform.Find("VictoryMenu").gameObject.SetActive(false);
         }
 
+    }
+
+    void CheckWin()
+    {
+        if (score >= 3000)
+        {
+            Debug.Log("WIN");
+            Destroy(gameObject);
+            EndGameScreen.SetActive(true);
+            EndGameScreen.transform.Find("GameOverMenu").gameObject.SetActive(false);
+        }
     }
 
     public void SetScore(int points)
@@ -81,9 +96,8 @@ public class Player : MonoBehaviour
         score += points;
         ui_score.text = "Score: " + score.ToString();
     }
-    void LivesCounter(int modifier)
+    void updateLives()
     {
-        lives += modifier;
         ui_lives.text = "Lives: " + lives.ToString();
     }
     void DisplayHealth(int healthPoints)
